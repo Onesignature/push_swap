@@ -1,78 +1,49 @@
-### Push_swap
+# push_swap
 
-```markdown
+A 42 sorting-algorithm project. Given a stack of integers, output the **shortest possible sequence** of allowed stack operations that sorts them.
 
-## Overview
+## The challenge
 
-**Push_swap** is a sorting algorithm project from 42. The goal is to sort a stack of integers using a specific set of allowed operations. The challenge is to sort the stack with the fewest possible moves. The project requires the implementation of both the sorting algorithm and a program that generates the sequence of operations.
+You have two stacks, `A` and `B`. `A` starts with the input integers; `B` starts empty. Sort `A` in ascending order using only the operations below — and minimize the move count.
 
-### Objectives
-- Given two stacks (A and B), sort stack A using predefined operations while keeping stack B as a temporary holder.
-- The solution must minimize the number of moves.
+## Allowed operations
 
-## Allowed Operations
-
-The following operations are allowed for sorting:
-
-- `sa` : Swap the first two elements of stack A.
-- `sb` : Swap the first two elements of stack B.
-- `ss` : Swap the first two elements of both stacks simultaneously.
-- `pa` : Push the first element of stack B onto stack A.
-- `pb` : Push the first element of stack A onto stack B.
-- `ra` : Rotate stack A upwards (first element becomes the last).
-- `rb` : Rotate stack B upwards.
-- `rr` : Rotate both stacks upwards.
-- `rra` : Reverse rotate stack A (last element becomes the first).
-- `rrb` : Reverse rotate stack B.
-- `rrr` : Reverse rotate both stacks.
+| Op | Effect |
+|---|---|
+| `sa` | Swap the top two elements of `A` |
+| `sb` | Swap the top two elements of `B` |
+| `ss` | `sa` and `sb` simultaneously |
+| `pa` | Push the top of `B` onto `A` |
+| `pb` | Push the top of `A` onto `B` |
+| `ra` | Rotate `A` upward (top element becomes last) |
+| `rb` | Rotate `B` upward |
+| `rr` | `ra` and `rb` simultaneously |
+| `rra` | Reverse rotate `A` (last element becomes first) |
+| `rrb` | Reverse rotate `B` |
+| `rrr` | `rra` and `rrb` simultaneously |
 
 ## Approach
 
-### Data Structure: Arrays
-I chose to solve the problem using arrays to represent the stacks. Each stack is an array where:
-- Stack A contains the input integers.
-- Stack B is initially empty and used as a helper stack for the sorting process.
+Stacks are stored as arrays. The strategy depends on input size:
 
-### Sorting Algorithm
-For sorting, I implemented a combination of the following strategies:
-1. **Small number of elements (<=5):**
-   - For small stacks, I used a brute-force approach to test every possible combination of operations.
-   
-2. **Larger stacks:**
-   - For larger stacks, I implemented an algorithm similar to quicksort, dividing the stack into smaller parts, pushing elements to stack B, and recursively sorting them.
-   
-### Edge Cases Handled
-- Empty input.
-- Single element input.
-- Already sorted stack.
-- Duplicate numbers (invalid input).
+- **≤ 5 elements** — brute-force the optimal sequence
+- **Larger inputs** — a chunk-based / quicksort-style strategy: push partitions of `A` to `B`, sort there, then merge back
 
-## How to Use
+Edge cases handled: empty input, single element, already-sorted input, duplicate-value rejection, and non-integer / overflow input rejection.
 
-### Compilation
-To compile the program, use the provided `Makefile`:
+## Build
 
 ```bash
 make
 ```
 
-This will generate the `push_swap` executable.
-
-### Running the Program
-You can run the program as follows:
-
-```bash
-./push_swap <list_of_integers>
-```
-
-For example:
+## Run
 
 ```bash
 ./push_swap 3 2 5 1 4
 ```
 
-### Example Output
-The output will be a sequence of operations that sort the input integers:
+Output is the operation sequence:
 
 ```
 pb
@@ -82,34 +53,26 @@ pa
 pa
 ```
 
-You can also use the `checker` program provided by 42 to verify the output of your solution:
+Pipe into the 42 `checker` to verify:
 
 ```bash
 ./push_swap 3 2 5 1 4 | ./checker 3 2 5 1 4
 ```
 
-## Files
-
-- `push_swap.c` : Contains the main logic for sorting and handling input/output.
-- `operations.c` : Implements the allowed stack operations.
-- `utils.c` : Utility functions for managing stacks and handling errors.
-- `Makefile` : Automates the compilation of the program.
-
-## Efficiency
-I optimized the algorithm to minimize the number of operations. The performance varies depending on the size of the input and the specific sequence of numbers provided.
-
-- **Small input (3-5 elements):** Efficient brute-force solutions.
-- **Larger input:** Implemented a more complex strategy for fewer operations.
-
-## Testing
-You can test the solution with random numbers using the `ARG` environment variable:
+Or with a variable:
 
 ```bash
 ARG="3 2 5 1 4"; ./push_swap $ARG | ./checker $ARG
 ```
 
+## Layout
+
+- `push_swap.c`, `push_swap.h` — entry point and headers
+- `parsing/` — argument parsing, validation, error handling
+- `operations/` — implementations of `sa`/`sb`/`ra`/`rb`/`pa`/`pb`/`rra`/`rrb`/...
+- `sorting/` — small-case brute force + chunk-based sort
+- `libft/` — utility functions
+
 ## Resources
 
-- [42 Push_swap subject](https://cdn.intra.42.fr/pdf/pdf/133152/en.subject.pdf)
-- [Sorting Algorithms Overview](https://en.wikipedia.org/wiki/Sorting_algorithm)
-```
+- [42 push_swap subject](https://cdn.intra.42.fr/pdf/pdf/133152/en.subject.pdf)
